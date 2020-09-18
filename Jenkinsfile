@@ -14,7 +14,7 @@ def imageBuild(containerName, tag){
     echo "Image build complete"
 }
 
-def runApp(containerName, tag, dockerHubUser, httpPort){
+def runApp(containerName, tag){
     sh "docker run -d --rm -p 9000:80 --name $containerName $containerName:$tag"
     echo "Application started"
 }
@@ -43,7 +43,7 @@ pipeline {
 	
     stage('Run App'){
 	    steps{
-	    runApp(CONTAINER_NAME, CONTAINER_TAG, DOCKER_HUB_USER, HTTP_PORT)
+	    runApp(CONTAINER_NAME, CONTAINER_TAG)
     }
     }
 
