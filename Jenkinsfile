@@ -1,5 +1,5 @@
 def CONTAINER_NAME="ui-api-2"
-def CONTAINER_TAG="latest"
+def CONTAINER_TAG="$BUILD_NUMBER"
 
 
 def imagePrune(containerName){
