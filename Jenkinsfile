@@ -15,7 +15,7 @@ def imageBuild(containerName, tag){
 }
 
 def runApp(containerName, tag, dockerHubUser, httpPort){
-    sh "docker run -d --rm -p 8080:80 --name $containerName $containerName:$tag"
+    sh "docker run -d --rm -p 9000:80 --name $containerName $containerName:$tag"
     echo "Application started"
 }
 
