@@ -25,7 +25,7 @@ pipeline {
     stages {
         stage('git SCM') {
             steps {
-                git branch: 'feature_restructure_version3', credentialsId: '040efd0c-d708-4a87-bf3c-e00f4cb91d31', url: 'https://adept-gitsource.sonata-software.com/digital-persona/profile-portal-ui.git'
+                git branch: 'master', url: 'https://github.com/nags28/demo_docker_jenkins.git'
             }
         }
 	stage("Image Prune"){
