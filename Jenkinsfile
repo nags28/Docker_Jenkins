@@ -1,11 +1,11 @@
-def CONTAINER_NAME="ui-api"
+def CONTAINER_NAME="ui-api-2"
 def CONTAINER_TAG="latest"
 
 
 def imagePrune(containerName){
     try {
         sh "docker image prune -f"
-        sh "docker stop $containerName"
+        sh "docker stop ui-api"
     } catch(error){}
 }
 
