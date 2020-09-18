@@ -20,7 +20,7 @@ pipeline {
     stages {
         stage('git SCM') {
             steps {
-                git branch: 'master', url: ''
+                git branch: 'master', url: 'https://github.com/nags28/demo_docker_jenkins.git'
             }
         }
 	stage("Image Prune"){
