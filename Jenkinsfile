@@ -1,4 +1,4 @@
-def CONTAINER_NAME="ui-api-2"
+def CONTAINER_NAME="ui-api"
 def CONTAINER_TAG="$BUILD_NUMBER"
 
 
