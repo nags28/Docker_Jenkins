@@ -4,7 +4,7 @@ def CONTAINER_TAG="latest"
 
 def imagePrune(containerName){
     try {
-        sh "docker image prune -a -f"
+        sh "docker image prune -f"
         sh "docker stop ui-api"
     } catch(error){}
 }
