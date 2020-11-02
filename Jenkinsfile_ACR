@@ -1,0 +1,80 @@
+def CONTAINER_NAME="demo_container"
+def CONTAINER_TAG="${BUILD_NUMBER}"
+def DOCKER_HUB_USER="demo.azurecr.io"
+
+
+def imagePrune(containerName){
+    try {
+        sh "sudo docker system prune -af"
+        sh "sudo docker stop profileportalui"
+    } catch(error){}
+}
+
+def imageBuild(containerName, tag){
+    sh "sudo docker build -t $containerName:$tag  -t $containerName --pull --no-cache ."
+    echo "Image build complete"
+}
+
+def pushToImage(containerName, tag, dockerUser, dockerPassword){
+    //sh "sudo docker login demo.azurecr.io -u $dockerUser -p $dockerPassword"
+    sh "sudo docker tag $containerName:$tag prddigtalpersonacr.azurecr.io/$containerName:$tag"
+    sh "sudo docker push demo.azurecr.io/$containerName:$tag"
+    echo "Image push complete"
+}
+
+def runApp(containerName, tag){
+    sh "sudo docker pull demo.azurecr.io/$containerName:$tag"
+    sh "sudo docker run -d --rm -p 9001:80 --name $containerName demo.azurecr.io/$containerName:$tag"
+    echo "Application started"
+}
+
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('git SCM') {
+            steps {
+                
+                checkout scm
+            }
+        }
+	stage("Image Prune"){
+       steps{
+	   imagePrune(CONTAINER_NAME)
+		}
+	}
+	
+	    stage('Image Build'){
+        steps{
+		imageBuild(CONTAINER_NAME, CONTAINER_TAG)
+		}
+	}
+	
+	   stage('login az '){
+		steps{
+		withCredentials([azureServicePrincipal('credentials_id')]) {
+			sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+			sh 'sudo docker login demo.azurecr.io --username $AZURE_CLIENT_ID --password $AZURE_CLIENT_SECRET'
+		}
+		}
+	}
+	
+		stage('Push to Azure Registry'){
+		steps{
+        withCredentials([usernamePassword(credentialsId: 'ACR_LOGIN', passwordVariable: 'PWD', usernameVariable: 'USER_NAME')]) {
+			 pushToImage(CONTAINER_NAME, CONTAINER_TAG, USER_NAME, PWD)
+        }
+    }
+	}
+	    
+	
+    stage('Run App'){
+	    steps{
+	    runApp(CONTAINER_NAME, CONTAINER_TAG)
+    }
+    }
+
+}
+}
